@@ -124,6 +124,15 @@ public class Employee{
     }
 
     /**
+     * set method for date of birth
+     *
+     * @param dateOfBirth
+     */
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    /**
      * get method for record date
      *
      * @return recordDate
@@ -156,6 +165,15 @@ public class Employee{
     }
 
     /**
+     * set method for employee record date
+     *
+     * @param recordDate
+     */
+    public void setRecordDate(LocalDate recordDate) {
+        this.recordDate = recordDate;
+    }
+
+    /**
      * get method for employee hire date
      *
      * @return hireDate
@@ -185,6 +203,15 @@ public class Employee{
      */
     public void setHireDate(int year, int month, int day) {
         this.hireDate = LocalDate.of(year, month, day);
+    }
+
+    /**
+     * set method for hire date
+     *
+     * @param hireDate
+     */
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
     }
 
     /**

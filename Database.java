@@ -29,6 +29,14 @@ public class Database {
     }
 
     /**
+     * Constructor
+     */
+    public Database(int capacity) {
+        this.employeeTable = new HashTableMap<>(capacity);      // initiate the hashtable with capacity
+        importEmployees();      // load data
+    }
+
+    /**
      * Load all the data from external files into the program. The file name is txt.
      */
     private void importEmployees(){
