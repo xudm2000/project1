@@ -39,27 +39,27 @@ public class Database {
     /**
      * Load all the data from external files into the program. The file name is txt.
      */
-    private void importEmployees(){
+    private void importEmployees() {
         FileReader fileReader;      // File reader object
         String os = System.getProperty("os.name");  // get the current operation system
         String filePath = "employee_info.txt";      // File path, linux' file path by default
 
         // If the current operation system is Windows, change the file path for windows. Same for MacOS
-        if(os.toLowerCase().contains("win")) {
+        if (os.toLowerCase().contains("win")) {
             filePath = "src\\employee_info.txt";
-        }else if(os.toLowerCase().contains("mac")){
+        } else if (os.toLowerCase().contains("mac")) {
             filePath = "src/employee_info.txt";
         }
-
+        BufferedReader bufferedReader = null;
         // Import the file and extract every pieces of data
         try {
             // Get ready for file reader and buffered reader
             fileReader = new FileReader(filePath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            bufferedReader = new BufferedReader(fileReader);
 
             // Scan file line by line
             String line = bufferedReader.readLine();
-            while(line != null && !line.equals("")){
+            while (line != null && !line.equals("")) {
                 // Split the line by comma and store them into a String array
                 String[] info = line.split(",");
 
@@ -93,21 +93,26 @@ public class Database {
                 String gender = info[6];                                        // Get employee's gender
 
                 String status = info[7];                                        // Get employee's status.
-                                                                                // Active or inactive
+                // Active or inactive
 
                 String businessUnit = info[8];                                  // Get employee's business unit
 
                 // Create the employee object with info above
                 Employee employee = new Employee(employeeId, name, dateOfBirth, recordDate, hireDate,
-                                                 jobTitle, gender, status, businessUnit);
+                        jobTitle, gender, status, businessUnit);
                 // Store the employee object into the hashtable
                 employeeTable.put(employee.getEmployeeID(), employee);
                 // Read next line in the file
                 line = bufferedReader.readLine();
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
             // If any Exception thrown, such as cannot locate the file,
             // just ignore and stop importing
+        } finally {
+            try{
+                if(bufferedReader!=null)
+                    bufferedReader.close();
+            }catch(Exception ignored){ }
         }
     }
 
@@ -116,9 +121,9 @@ public class Database {
      *
      * @return hashtable of employees
      */
-    public HashTableMap<Integer, Employee> allEmployeeInfos(){
+    public HashTableMap<Integer, Employee> allEmployeeInfos() {
         // If the size is 0, return null
-        if(employeeTable.size() == 0){
+        if (employeeTable.size() == 0) {
             return null;
         }
         return employeeTable;
@@ -130,7 +135,7 @@ public class Database {
      * @param employee
      * @return true if the put is successful, otherwise return false
      */
-    public boolean addEmployee(Employee employee){
+    public boolean addEmployee(Employee employee) {
         return employeeTable.put(employee.getEmployeeID(), employee);
     }
 
@@ -140,10 +145,10 @@ public class Database {
      * @param employeeId
      * @return the employee object found by id. Return null if no match is found.
      */
-    public Employee getEmployeeInfoByID(int employeeId){
+    public Employee getEmployeeInfoByID(int employeeId) {
         try {
             return employeeTable.get(employeeId);
-        }catch (NoSuchElementException nsee){
+        } catch (NoSuchElementException nsee) {
             // Since get method will thrown an exception when no match found. Catch the exception and return null
             return null;
         }
@@ -156,40 +161,42 @@ public class Database {
      * @param employee
      * @return true if update is successful, false if the id does not exist (no match found)
      */
-    public boolean updateEmployeeByID(int employeeID, Employee employee){
+    public boolean updateEmployeeByID(int employeeID, Employee employee) {
         // If the param employeeID is different than the id in the param employee object, return false
-        if(employeeID != employee.getEmployeeID()) return false;
+        if (employeeID != employee.getEmployeeID()) return false;
         // Remove the employee object from the hashtable and replace with the param employee object
         // If there's no such employee, return false
-        if(employeeTable.remove(employeeID) != null){
+        if (employeeTable.remove(employeeID) != null) {
             return employeeTable.put(employeeID, employee);
-        }else{
+        } else {
             return false;
         }
     }
 
     /**
      * delete the employee by employee ID
+     *
      * @param employeeId
      * @return true if the deletion is successful, false if no match is found.
      */
-    public boolean deleteEmployeeByID(int employeeId){
+    public boolean deleteEmployeeByID(int employeeId) {
         return employeeTable.remove(employeeId) != null;
     }
 
     /**
      * check if an employee exits by employee ID
+     *
      * @param employeeId
      * @return true if exist, and false if not
      */
-    public boolean containEmployeeByID(int employeeId){
+    public boolean containEmployeeByID(int employeeId) {
         return employeeTable.containsKey(employeeId);
     }
 
     /**
      * clear all the employee in the hash table
      */
-    public void clearEmployees(){
+    public void clearEmployees() {
         employeeTable.clear();
     }
 }
