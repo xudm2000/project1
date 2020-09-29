@@ -6,6 +6,11 @@
 // Lecturer: Gary Dahl
 // Notes to Grader: No note
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+
 /**
  * Class that handles log in authentication and register
  *
@@ -35,6 +40,30 @@ public class LogInAndRegister {
      */
     public LogInAndRegister() {
         userTable = new HashTableMap<>();
+        FileReader fileReader;      // File reader object
+        String os = System.getProperty("os.name");  // get the current operation system
+        String filePath = "user_info.txt";      // File path, linux' file path by default
+
+        // If the current operation system is Windows, change the file path for windows. Same for MacOS
+        if (os.toLowerCase().contains("win")) {
+            filePath = "src\\user_info.txt";
+        } else if (os.toLowerCase().contains("mac")) {
+            filePath = "src/user_info.txt";
+        }
+
+        try {
+            // Get ready for file reader and buffered reader
+            fileReader = new FileReader(filePath);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            // Scan file line by line
+            String line = bufferedReader.readLine();
+            while (line != null && !line.equals("")) {
+                String[] userInfo = line.split(",");
+                userTable.put(userInfo[0], new User(userInfo[0], userInfo[1], Boolean.parseBoolean(userInfo[2])));
+                line = bufferedReader.readLine();
+            }
+        }catch (Exception ignored){ }
     }
 
     /**
@@ -45,7 +74,7 @@ public class LogInAndRegister {
      * @return true if authentication granted, false if authencation failed
      */
     public boolean logIn(String username, String password){
-        // chekc whether username exists in the database
+        // check whether username exists in the database
         if(!isUserExist(username)){
             return false;
         }
@@ -67,6 +96,32 @@ public class LogInAndRegister {
         if(!userTable.containsKey(username)) {
             User user = new User(username, encryption(password), isAdmin);      // create a user object
             userTable.put(username, user);          // add user object to the hashtable and return true
+
+            String os = System.getProperty("os.name");  // get the current operation system
+            String filePath = "user_info.txt";      // File path, linux' file path by default
+
+            // If the current operation system is Windows, change the file path for windows. Same for MacOS
+            if (os.toLowerCase().contains("win")) {
+                filePath = "src\\user_info.txt";
+            } else if (os.toLowerCase().contains("mac")) {
+                filePath = "src/user_info.txt";
+            }
+            BufferedWriter bw = null;
+            // Write the user to a binary fi;e
+            try {
+                FileWriter fw = new FileWriter(filePath, true);
+                bw = new BufferedWriter(fw);
+                // Create a String object that contains user info
+                String output = username + "," + encryption(password) + "," + isAdmin + "\n";
+                // Write to external file
+                bw.write(output);
+            }catch (Exception ignored){}	
+            finally {
+                try{
+                    if(bw!=null)
+                        bw.close();
+                }catch(Exception ignored){ }
+            }
             return true;
         }else{
             return false;
