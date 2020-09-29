@@ -50,11 +50,11 @@ public class LogInAndRegister {
         } else if (os.toLowerCase().contains("mac")) {
             filePath = "src/user_info.txt";
         }
-
+        BufferedReader bufferedReader = null;
         try {
             // Get ready for file reader and buffered reader
             fileReader = new FileReader(filePath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            bufferedReader = new BufferedReader(fileReader);
 
             // Scan file line by line
             String line = bufferedReader.readLine();
@@ -63,7 +63,13 @@ public class LogInAndRegister {
                 userTable.put(userInfo[0], new User(userInfo[0], userInfo[1], Boolean.parseBoolean(userInfo[2])));
                 line = bufferedReader.readLine();
             }
-        }catch (Exception ignored){ }
+        }catch (Exception ignored){
+        }finally {
+            try{
+                if(bufferedReader!=null)
+                    bufferedReader.close();
+            }catch(Exception ignored){ }
+        }
     }
 
     /**
@@ -107,7 +113,7 @@ public class LogInAndRegister {
                 filePath = "src/user_info.txt";
             }
             BufferedWriter bw = null;
-            // Write the user to a binary fi;e
+            // Write the user to a binary file
             try {
                 FileWriter fw = new FileWriter(filePath, true);
                 bw = new BufferedWriter(fw);
@@ -146,5 +152,38 @@ public class LogInAndRegister {
      */
     public boolean isAdmin(String username){
         return userTable.get(username).isAdmin();
+    }
+
+    /**
+     * clear the user database
+     */
+    public void clear(){
+        userTable = new HashTableMap<>();
+
+        String os = System.getProperty("os.name");  // get the current operation system
+        String filePath = "user_info.txt";      // File path, linux' file path by default
+
+        // If the current operation system is Windows, change the file path for windows. Same for MacOS
+        if (os.toLowerCase().contains("win")) {
+            filePath = "src\\user_info.txt";
+        } else if (os.toLowerCase().contains("mac")) {
+            filePath = "src/user_info.txt";
+        }
+        BufferedWriter bw = null;
+        // Write the user to a binary file
+        try {
+            FileWriter fw = new FileWriter(filePath);
+            bw = new BufferedWriter(fw);
+            // Create a String object that contains ""
+            String output = "";
+            // Write to external file
+            bw.write(output);
+        }catch (Exception ignored){}
+        finally {
+            try{
+                if(bw!=null)
+                    bw.close();
+            }catch(Exception ignored){ }
+        }
     }
 }
